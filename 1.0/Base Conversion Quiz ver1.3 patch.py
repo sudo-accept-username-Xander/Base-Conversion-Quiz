@@ -111,7 +111,7 @@ class StopWatch(Frame): # This sets up the timer for all difficulties
 def Make_Easy(): # This makes the easy difficulty
     # This makes the easy mode window
     global answer, points, easy_result_label, easy_window, load_question, question_no, easy_user_entry, easy_username_submit_button, easy_username_submited_label, easy_username_entry
-    try: # This makes it so only one quiz window can be open at once
+    try: # This makes it so only one quiz window can be open at once (causes errors if this is alowed)
         easy_window.destroy()
         medium_window.destroy()
         expert_window.destroy()
@@ -559,10 +559,10 @@ def Make_Expert(): # This makes the expert difficulty
             expert_user_entry.bind("<Return>", lambda event: check_answer(expert_user_entry, "expert"))
             expert_question_no_label.config(text="Level: "+str(question_no)+"/10\nDifficulty: expert")
         if question_no > 10: # The win state
-            if timer_toggle == True:
+            if timer_toggle == True: # Timer on stuff
                 expert_final_result_label.config(text="Quiz complete! Your score: "+str(points)+"/10\nTime taken:"+time_val)
                 sw.Stop()
-            else:
+            else: # Timer off stuff
                 expert_final_result_label.config(text="Quiz complete! Your score: "+str(points)+"/10")
                 time_val = "--:--:--"
             expert_submit_button.destroy()
@@ -822,7 +822,7 @@ def check_answer(entry, difficulty, event=None): # This is the answer checker
         medium_window.after(1500, load_question)
         return entry.delete(0, tk.END)
     elif difficulty == "expert": # This is the answer checker for expert
-        user_input = entry.get().strip().upper() # Because hex uses letters I have to make expert allow letters
+        user_input = entry.get().strip().upper() # Because hex uses letters I have to make expert allow some letters
         if user_input in hex_digits:
             if str(user_input) == str(answer):
                 points += 1
@@ -914,7 +914,9 @@ def score_func(difficulty): # This is for the user to check old scores and compa
                 Label(score_window, text="No scores for this difficulty.\nMaybe you can be the first?", bg="#FFFFFF").grid(row=3, column=2, columnspan=3)
 
     except FileNotFoundError: # No file found
-        messagebox.showerror("Error", "Error file does not exist.\nMaybe you can be the first?")
+        with open("Score.txt", "a") as file:
+            pass
+        Label(score_window, text="No scores for this difficulty.\nMaybe you can be the first?", bg="#FFFFFF").grid(row=3, column=2, columnspan=3)
                     
 def back_to_root():
     global quit_window, quit_window_open

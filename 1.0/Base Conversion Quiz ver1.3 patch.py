@@ -339,7 +339,7 @@ def Make_Medium(): # This makes the medium difficulty
     answer = 0
     points = 0
     def load_question():
-        global question_no, answer, points
+        global question_no, answer, points, time_val
         medium_user_entry.config(state="normal")
         if question_no <= 10:
             medium_user_entry.bind("<Return>", lambda event: check_answer(medium_user_entry, "medium"))
@@ -553,7 +553,7 @@ def Make_Expert(): # This makes the expert difficulty
     answer = 0
     points = 0
     def load_question():
-        global question_no, answer, points, hex_digits
+        global question_no, answer, points, hex_digits, time_val
         expert_user_entry.config(state="normal")
         if question_no <= 10:
             expert_user_entry.bind("<Return>", lambda event: check_answer(expert_user_entry, "expert"))

@@ -179,7 +179,7 @@ def Make_Easy(): # This makes the easy difficulty
     easy_final_result_label = Label(easy_window, text="", font=("Arial", 11), bg=easy_window_bg)
     easy_user_entry.config(state="normal")
     easy_username_entry = Entry(easy_window, font=("Arial", 12), width=12)
-    easy_username_submit_button = Button(easy_window, text="Submit username", command=lambda: write_score("easy", points, time_val, easy_username_entry.get().strip()))
+    easy_username_submit_button = Button(easy_window, text="Submit username", command=lambda: chara_limit("easy", points, time_val, easy_username_entry.get().strip()))
     easy_username_submit_button.config(bg=easy_button_bg)
     easy_username_submited_label = Label(easy_window, text="", font=("Arial", 11), bg=easy_window_bg)
     
@@ -209,7 +209,7 @@ def Make_Easy(): # This makes the easy difficulty
             easy_username_submited_label.grid(row=7, column=1, columnspan=3)
             easy_username_submit_button.grid(row=6, column=2)
             easy_username_entry.grid(row=5, column=2)
-            easy_username_entry.bind("<Return>", lambda event: write_score("easy", points, time_val, easy_username_entry.get().strip()))
+            easy_username_entry.bind("<Return>", lambda event: chara_limit("easy", points, time_val, easy_username_entry.get().strip()))
             return
         # Generate question:
         this_to = int(rand(1,2)) # 1 is binary 2 is decimal 3 is octal 4 is hex (3+4 cant be called on easy)
@@ -331,7 +331,7 @@ def Make_Medium(): # This makes the medium difficulty
     medium_final_result_label = Label(medium_window, text="", font=("Arial", 11), bg=medium_window_bg)
     medium_user_entry.config(state="normal")
     medium_username_entry = Entry(medium_window, font=("Arial", 12), width=12)
-    medium_username_submit_button = Button(medium_window, text="Submit username", command=lambda: write_score("medium", points, time_val, medium_username_entry.get().strip()))
+    medium_username_submit_button = Button(medium_window, text="Submit username", command=lambda: chara_limit("medium", points, time_val, medium_username_entry.get().strip()))
     medium_username_submit_button.config(bg=medium_button_bg)
     medium_username_submited_label = Label(medium_window, text="", font=("Arial", 11), bg=medium_window_bg)
     
@@ -360,7 +360,7 @@ def Make_Medium(): # This makes the medium difficulty
             medium_username_submited_label.grid(row=7, column=1, columnspan=3)
             medium_username_submit_button.grid(row=6, column=2)
             medium_username_entry.grid(row=5, column=2)
-            medium_username_entry.bind("<Return>", lambda event: write_score("medium", points, time_val, medium_username_entry.get().strip()))
+            medium_username_entry.bind("<Return>", lambda event: chara_limit("medium", points, time_val, medium_username_entry.get().strip()))
             return
         # Generate question:
         this_to = int(rand(1,3)) # 1 is binary 2 is decimal 3 is octal 4 is hex (4 cant be called on medium)
@@ -545,7 +545,7 @@ def Make_Expert(): # This makes the expert difficulty
     expert_final_result_label = Label(expert_window, text="", font=("Arial", 11), bg=expert_window_bg)
     expert_user_entry.config(state="normal")
     expert_username_entry = Entry(expert_window, font=("Arial", 12), width=12)
-    expert_username_submit_button = Button(expert_window, text="Submit username", command=lambda: write_score("expert", points, time_val, expert_username_entry.get().strip()))
+    expert_username_submit_button = Button(expert_window, text="Submit username", command=lambda: chara_limit("expert", points, time_val, expert_username_entry.get().strip()))
     expert_username_submit_button.config(bg=expert_button_bg)
     expert_username_submited_label = Label(expert_window, text="", font=("Arial", 11), bg=expert_window_bg)
     
@@ -574,7 +574,7 @@ def Make_Expert(): # This makes the expert difficulty
             expert_username_submited_label.grid(row=7, column=1, columnspan=3)
             expert_username_submit_button.grid(row=6, column=2)
             expert_username_entry.grid(row=5, column=2)
-            expert_username_entry.bind("<Return>", lambda event: write_score("expert", points, time_val, expert_username_entry.get().strip()))
+            expert_username_entry.bind("<Return>", lambda event: chara_limit("expert", points, time_val, expert_username_entry.get().strip()))
             return
         # Generate question:
         this_to = int(rand(1,4)) # 1 is binary 2 is decimal 3 is octal 4 is hex
@@ -788,7 +788,7 @@ def check_answer(entry, difficulty, event=None): # This is the answer checker
     if difficulty == "easy": # This is the answer checker for easy
         user_input = entry.get().strip()
         if not user_input.isdigit():
-            messagebox.showerror("Error", "Answer must be a number.")
+            messagebox.showerror("Error", "Answer must be a whole non-negative number.")
             return
         if int(user_input) == answer:
             points += 1
@@ -806,7 +806,7 @@ def check_answer(entry, difficulty, event=None): # This is the answer checker
     elif difficulty == "medium": # This is the answer checker for medium
         user_input = entry.get().strip()
         if not user_input.isdigit():
-            messagebox.showerror("Error", "Answer must be a number.")
+            messagebox.showerror("Error", "Answer must be a whole non-negative number.")
             return
         if int(user_input) == answer:
             points += 1
@@ -837,7 +837,7 @@ def check_answer(entry, difficulty, event=None): # This is the answer checker
             expert_window.after(1500, load_question)
             return entry.delete(0, tk.END)
         else:
-            messagebox.showerror("Error", "Answer must be a number or letters used in hex.")
+            messagebox.showerror("Error", "Answer must be a whole non-negative number\nor letters used in hex.")
 
 def write_score(difficulty, score, time_taken, user): # Writes the score into a file named "Score.txt" with difficulty, the username, score ot of 10, and the time the user took
     global easy_username_submit_button, medium_window, expert_window
@@ -918,6 +918,14 @@ def score_func(difficulty): # This is for the user to check old scores and compa
             pass
         Label(score_window, text="No scores for this difficulty.\nMaybe you can be the first?", bg="#FFFFFF").grid(row=3, column=2, columnspan=3)
                     
+def chara_limit(difficulty, score, time_taken, entry):
+    if len(entry) > 14:
+        return messagebox.showerror("Error", "Cannot have a username longer than 15 characters")
+    elif len(entry) == 0 or len(entry) == 1:
+        return messagebox.showerror("Error", "Cannot have a username shorter than 2 characters")
+    else:
+        return write_score(difficulty, score, time_taken, entry)
+    
 def back_to_root():
     global quit_window, quit_window_open
     quit_window_open = False
